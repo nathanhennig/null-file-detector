@@ -1,4 +1,4 @@
-# NullChecker
+# Null-File Detector
 
 ## Description and background:
 When performing data recovery services, sometimes the damage is too significant to fully recover all files.  When that occurs, it often requires a great deal of time examining the recovered data and separating out the files that are damaged to the point of uselessness.
