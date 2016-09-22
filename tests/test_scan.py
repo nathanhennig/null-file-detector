@@ -51,7 +51,7 @@ class ScanTestSuite(unittest.TestCase):
         target_null_count = 1 * 1024 * 1024 * .25
 
         self.assertFalse(target_null_count - 1 <=
-                        count <= target_null_count + 1)
+                         count <= target_null_count + 1)
 
 
 def writeNullFile(name, total_bytes, null_bytes, null_char=b'\x00'):
