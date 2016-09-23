@@ -22,7 +22,7 @@ class FileTestSuite(unittest.TestCase):
         # Confirm creation of null.File object
         self.assertIsInstance(self.file, null.File)
         
-    def test_null_count_initial(self):
+    def test_File_null_count_initial(self):
         # Check inital null count is set to zero
         self.assertEqual(self.file.null_count, 0)
 
