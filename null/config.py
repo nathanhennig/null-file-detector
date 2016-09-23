@@ -9,6 +9,11 @@ def create_default_config():
     config.set(
         'General', '# Null character must be a hex byte with no prefix eg. 00, a0, ff')
     config.set('General', 'null_char', binascii.hexlify('\x00'))
+    config.set(
+        'General', '# When true, all subdirectories are scanned by default')
+    config.set('General', 'recursive', 'False')
+    config.set(
+        'General', '# Prepends all results with percent null')
     config.set('General', 'verbose', 'False')
     config.set('General', 'category_1_name', 'GOOD')
     config.set('General', 'category_2_name', 'DAMAGED')
@@ -41,9 +46,31 @@ def read_config():
 
     config_dict = {}
 
-    config_dict['verbose'] = config.getboolean('General', 'verbose')
-    config_dict['null_char'] = binascii.unhexlify(
-        config.get('General', 'null_char'))
+    try:
+        config_dict['verbose'] = config.getboolean('General', 'verbose')
+    except ConfigParser.NoOptionError:
+        print("NoOptionError: 'verbose' option missing, assuming False "
+              "unless set by command line")
+        config_dict['verbose'] = False
+
+    try:
+        config_dict['null_char'] = binascii.unhexlify(
+            config.get('General', 'null_char'))
+    except ConfigParser.NoOptionError:
+        print("NoOptionError: 'null_char' option missing, assuming '\\x00' "
+              "unless set by command line")
+        config_dict['null_char'] = b'\x00'
+    except TypeError:
+        print("TypeError: 'null_char' option invalid, assuming '\\x00' "
+              "unless set by command line")
+        config_dict['null_char'] = b'\x00'
+
+    try:
+        config_dict['recursive'] = config.getboolean('General', 'recursive')
+    except ConfigParser.NoOptionError:
+        print("NoOptionError: 'recursive' option missing, assuming False "
+              "unless set by command line")
+        config_dict['recursive'] = False
 
     config_dict['category_1_name'] = config.get('General', 'category_1_name')
     config_dict['category_2_name'] = config.get('General', 'category_2_name')
