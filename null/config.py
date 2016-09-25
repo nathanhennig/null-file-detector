@@ -1,6 +1,7 @@
 import ConfigParser
 import binascii
 import sys
+import defaults
 
 
 def create_default_config(config_file):
@@ -9,26 +10,22 @@ def create_default_config(config_file):
     config.add_section('General')
     config.set(
         'General', '# Null character must be a hex byte with no prefix eg. 00, a0, ff')
-    config.set('General', 'null_char', binascii.hexlify('\x00'))
+    config.set('General', 'null_char', binascii.hexlify(
+        defaults.Default.NULL_CHAR))
     config.set(
         'General', '# When true, all subdirectories are scanned by default')
-    config.set('General', 'recursive', 'False')
+    config.set('General', 'recursive', str(defaults.Default.RECURSIVE))
     config.set(
         'General', '# Prepends all results with percent null')
-    config.set('General', 'verbose', 'False')
-    config.set('General', 'category_1_name', 'GOOD')
-    config.set('General', 'category_2_name', 'DAMAGED')
-    config.set('General', 'category_3_name', 'BAD')
+    config.set('General', 'verbose', str(defaults.Default.VERBOSE))
+    config.set('General', 'category_1_name', defaults.Default.CAT_1_NAME)
+    config.set('General', 'category_2_name', defaults.Default.CAT_2_NAME)
+    config.set('General', 'category_3_name', defaults.Default.CAT_3_NAME)
 
     config.add_section('Categories')
-    config.set('Categories', 'cat1', '5')
-    config.set('Categories', 'cat2', '20')
-    config.set('Categories', 'cat3', '85')
-
-    # config.add_section('txt')
-    # config.set('txt', 'cat1', '5')
-    # config.set('txt', 'cat2', '20')
-    # config.set('txt', 'cat3', '85')
+    config.set('Categories', 'cat1', str(defaults.Default.CAT_1))
+    config.set('Categories', 'cat2', str(defaults.Default.CAT_2))
+    config.set('Categories', 'cat3', str(defaults.Default.CAT_3))
 
     with open(config_file, 'wb') as configfile:
         config.write(configfile)
@@ -50,9 +47,9 @@ def read_config(config_file='null.cfg'):
     try:
         config_dict['verbose'] = config.getboolean('General', 'verbose')
     except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
-        print("NoOptionError: 'verbose' option missing, assuming False "
+        print("NoOptionError: 'verbose' option missing, assuming {} ".format(defaults.Default.VERBOSE)
               "unless set by command line")
-        config_dict['verbose'] = False
+        config_dict['verbose'] = defaults.Default.VERBOSE
     except ValueError:
         print("ValueError: 'verbose' option not set to a boolean value")
         sys.exit()
@@ -63,7 +60,7 @@ def read_config(config_file='null.cfg'):
     except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
         print("NoOptionError: 'null_char' option missing, assuming '\\x00' "
               "unless set by command line")
-        config_dict['null_char'] = b'\x00'
+        config_dict['null_char'] = defaults.Default.NULL_CHAR
     except TypeError:
         print("TypeError: 'null_char' option invalid")
         sys.exit()
@@ -73,14 +70,15 @@ def read_config(config_file='null.cfg'):
     except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
         print("NoOptionError: 'recursive' option missing, assuming False "
               "unless set by command line")
-        config_dict['recursive'] = False
+        config_dict['recursive'] = defaults.Default.RECURSIVE
     except ValueError:
         print("ValueError: 'recursive' option not set to a boolean value")
         sys.exit()
 
-    default_names = ['GOOD', 'DAMAGED', 'BAD']
-    for index, key in enumerate(
-            ['category_1_name', 'category_2_name', 'category_3_name']):
+    default_names = [defaults.Default.CAT_1_NAME,
+                     defaults.Default.CAT_2_NAME,
+                     defaults.Default.CAT_3_NAME]
+    for key in ['category_1_name', 'category_2_name', 'category_3_name']:
         try:
             config_dict[key] = config.get('General', key)
         except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
@@ -100,8 +98,8 @@ def read_config(config_file='null.cfg'):
 
     if 'Categories' not in config._sections:
         config_dict['Categories'] = {}
-        config_dict['Categories']['cat1'] = 5
-        config_dict['Categories']['cat2'] = 20
-        config_dict['Categories']['cat3'] = 85
+        config_dict['Categories']['cat1'] = defaults.Default.CAT_1
+        config_dict['Categories']['cat2'] = defaults.Default.CAT_2
+        config_dict['Categories']['cat3'] = defaults.Default.CAT_3
 
     return config_dict
