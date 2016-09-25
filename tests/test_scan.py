@@ -9,23 +9,21 @@ import time
 from multiprocessing import JoinableQueue
 
 
+@unittest.skip("showing class skipping")
 class ScanTestSuite(unittest.TestCase):
-    """Basic test cases."""
-
-    TEST_DIR = './test_directory'
-    TEST_FILE_NAME = 'test.zip'
+    """Scan test cases."""
 
     def setUp(self):
         # Create a temporary file to scan
-        os.mkdir(ScanTestSuite.TEST_DIR)
+        os.mkdir(null.Default.TEST_DIR)
         self.name = os.path.normpath(os.path.join(
-            ScanTestSuite.TEST_DIR, ScanTestSuite.TEST_FILE_NAME))
-        writeNullFile(name=self.name, total_bytes=(
-            4 * 1024 * 1024), null_bytes=(4 * 1024 * 1024 * .25))
+            null.Default.TEST_DIR, null.Default.TEST_FILE_NAME))
+        writeNullFile(name=self.name, total_bytes=null.Default.TEST_FILE_SIZE,
+                      null_bytes=null.Default.TEST_FILE_NULL_COUNT)
 
         self.work = JoinableQueue()
         self.results = JoinableQueue()
-        self.null_char = b'\x00'
+        self.null_char = null.Default.TEST_NULL_CHAR
         self.worker_list = null.create_workers(
             self.work, self.results, self.null_char)
 
@@ -35,12 +33,12 @@ class ScanTestSuite(unittest.TestCase):
             worker.terminate()
 
         os.remove(self.name)
-        os.rmdir(ScanTestSuite.TEST_DIR)
+        os.rmdir(null.Default.TEST_DIR)
 
     def test_Scan_count(self):
         count = null.scan(self.name, self.work, self.results)
         size = os.stat(self.name).st_size
-        target_null_count = 4 * 1024 * 1024 * .25
+        target_null_count = null.Default.TEST_FILE_NULL_COUNT
 
         self.assertTrue(target_null_count - 1 <=
                         count <= target_null_count + 1)
@@ -48,7 +46,7 @@ class ScanTestSuite(unittest.TestCase):
     def test_Scan_count_false(self):
         count = null.scan(self.name, self.work, self.results)
         size = os.stat(self.name).st_size
-        target_null_count = 1 * 1024 * 1024 * .25
+        target_null_count = null.Default.TEST_FILE_NULL_COUNT
 
         self.assertFalse(target_null_count - 1 <=
                          count <= target_null_count + 1)
