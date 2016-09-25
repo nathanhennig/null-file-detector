@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#
+
 import argparse
 import binascii
 import os
