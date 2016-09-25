@@ -1,8 +1,9 @@
 import ConfigParser
 import binascii
+import sys
 
 
-def create_default_config():
+def create_default_config(config_file):
     config = ConfigParser.SafeConfigParser(allow_no_value=True)
 
     config.add_section('General')
@@ -24,57 +25,66 @@ def create_default_config():
     config.set('Categories', 'cat2', '20')
     config.set('Categories', 'cat3', '85')
 
-    config.add_section('txt')
-    config.set('txt', 'cat1', '5')
-    config.set('txt', 'cat2', '20')
-    config.set('txt', 'cat3', '85')
+    # config.add_section('txt')
+    # config.set('txt', 'cat1', '5')
+    # config.set('txt', 'cat2', '20')
+    # config.set('txt', 'cat3', '85')
 
-    with open('null.cfg', 'wb') as configfile:
+    with open(config_file, 'wb') as configfile:
         config.write(configfile)
 
 
-def read_config():
+def read_config(config_file='null.cfg'):
 
     config = ConfigParser.SafeConfigParser()
 
-    options = config.read('null.cfg')
+    options = config.read(config_file)
 
     # check that config file exists
     if len(options) <= 0:
         print('Config file not found, generating default config file.')
-        create_default_config()
+        create_default_config(config_file)
 
     config_dict = {}
 
     try:
         config_dict['verbose'] = config.getboolean('General', 'verbose')
-    except ConfigParser.NoOptionError:
+    except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
         print("NoOptionError: 'verbose' option missing, assuming False "
               "unless set by command line")
         config_dict['verbose'] = False
+    except ValueError:
+        print("ValueError: 'verbose' option not set to a boolean value")
+        sys.exit()
 
     try:
         config_dict['null_char'] = binascii.unhexlify(
             config.get('General', 'null_char'))
-    except ConfigParser.NoOptionError:
+    except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
         print("NoOptionError: 'null_char' option missing, assuming '\\x00' "
               "unless set by command line")
         config_dict['null_char'] = b'\x00'
     except TypeError:
-        print("TypeError: 'null_char' option invalid, assuming '\\x00' "
-              "unless set by command line")
-        config_dict['null_char'] = b'\x00'
+        print("TypeError: 'null_char' option invalid")
+        sys.exit()
 
     try:
         config_dict['recursive'] = config.getboolean('General', 'recursive')
-    except ConfigParser.NoOptionError:
+    except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
         print("NoOptionError: 'recursive' option missing, assuming False "
               "unless set by command line")
         config_dict['recursive'] = False
+    except ValueError:
+        print("ValueError: 'recursive' option not set to a boolean value")
+        sys.exit()
 
-    config_dict['category_1_name'] = config.get('General', 'category_1_name')
-    config_dict['category_2_name'] = config.get('General', 'category_2_name')
-    config_dict['category_3_name'] = config.get('General', 'category_3_name')
+    default_names = ['GOOD', 'DAMAGED', 'BAD']
+    for index, key in enumerate(
+            ['category_1_name', 'category_2_name', 'category_3_name']):
+        try:
+            config_dict[key] = config.get('General', key)
+        except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
+            config_dict[key] = default_names[index]
 
     for key in config._sections:
         if key == 'General':
@@ -87,5 +97,11 @@ def read_config():
                 config_dict[key][subkey] = int(config._sections[key][subkey])
             except ValueError:
                 config_dict[key][subkey] = config._sections[key][subkey]
+
+    if 'Categories' not in config._sections:
+        config_dict['Categories'] = {}
+        config_dict['Categories']['cat1'] = 5
+        config_dict['Categories']['cat2'] = 20
+        config_dict['Categories']['cat3'] = 85
 
     return config_dict
