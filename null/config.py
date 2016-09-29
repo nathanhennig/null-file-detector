@@ -41,13 +41,14 @@ def read_config(config_file='null.cfg'):
     if len(options) <= 0:
         print('Config file not found, generating default config file.')
         create_default_config(config_file)
+        config.read(config_file)
 
     config_dict = {}
 
     try:
         config_dict['verbose'] = config.getboolean('General', 'verbose')
     except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
-        print("NoOptionError: 'verbose' option missing, assuming {} ".format(defaults.Default.VERBOSE)
+        print("NoOptionError: 'verbose' option missing, assuming False "
               "unless set by command line")
         config_dict['verbose'] = defaults.Default.VERBOSE
     except ValueError:
@@ -78,7 +79,7 @@ def read_config(config_file='null.cfg'):
     default_names = [defaults.Default.CAT_1_NAME,
                      defaults.Default.CAT_2_NAME,
                      defaults.Default.CAT_3_NAME]
-    for key in ['category_1_name', 'category_2_name', 'category_3_name']:
+    for index, key in enumerate(['category_1_name', 'category_2_name', 'category_3_name']):
         try:
             config_dict[key] = config.get('General', key)
         except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
@@ -101,5 +102,8 @@ def read_config(config_file='null.cfg'):
         config_dict['Categories']['cat1'] = defaults.Default.CAT_1
         config_dict['Categories']['cat2'] = defaults.Default.CAT_2
         config_dict['Categories']['cat3'] = defaults.Default.CAT_3
+
+    # Set default start_directory value
+    config_dict['start_directory'] = defaults.Default.START_DIRECTORY
 
     return config_dict

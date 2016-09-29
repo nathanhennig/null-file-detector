@@ -2,6 +2,7 @@ from functools import partial
 from multiprocessing import Process
 import multiprocessing as mp
 import sys
+import os
 
 
 def read_in_chunks(file_object, chunk_size=4 * 1024 * 1024):
@@ -38,7 +39,7 @@ def scan(name, work_queue, result_queue):
 
     # get the results
     null_count = sum([result_queue.get()
-                      for i in xrange(result_queue.qsize())])
+                      for i in range(result_queue.qsize())])
 
     return null_count
 
@@ -49,10 +50,24 @@ def create_workers(work_queue, result_queue, null_char=b'\x00'):
 
     # start workers
     worker_list = []
-    for i in xrange(num_workers):
+    for i in range(num_workers):
         t = Process(target=do_work, args=(work_queue, result_queue, null_char))
         worker_list.append(t)
         t.daemon = True
         t.start()
 
     return worker_list
+
+def scan_target(path, files, directories):
+
+    if not os.path.isdir(path):
+        files.append(path)
+        return files, directories
+
+    for entry in os.listdir(path):
+        if os.path.isdir(entry):
+            directories.append(entry)
+        else:
+            files.append(entry)
+
+    return files, directories

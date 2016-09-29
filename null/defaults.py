@@ -14,6 +14,7 @@ class Default():
     NULL_CHAR = '\x00'
     RECURSIVE = False
     VERBOSE = False
+    START_DIRECTORY = '.'
 
     CAT_1_NAME = 'GOOD'
     CAT_2_NAME = 'DAMAGED'
