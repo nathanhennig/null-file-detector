@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-#
 
 from config import read_config
 from scan import create_workers, scan, scan_target
 from options import parse_args
 from multiprocessing import JoinableQueue
+from multiprocessing import freeze_support
 from file import File
 from sortprint import sort_print
 import sys
 import os
+
 
 
 def main():
@@ -55,4 +56,5 @@ def main():
     sort_print(scanned_files, config_dict)
 
 if __name__ == '__main__':
+    freeze_support()
     main()
