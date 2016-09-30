@@ -271,15 +271,6 @@ class OptionsTestSuite(unittest.TestCase):
         self.assertEqual(expected, null.parse_args(
             config_dict, args)['recursive'])
 
-    def test_Option_recursive_too_many_arguments(self):
-        config_dict = {'recursive': False}
-        args = ['-r', '2']
-        with self.assertRaises(SystemExit) as cm:
-            with capture_sys_output() as (stdout, stderr):
-                null.parse_args(config_dict, args)
-
-        self.assertEqual(cm.exception.code, 2)
-
     # ----------------------------------------------------
 
     def test_Option_verbose_valid(self):
@@ -295,15 +286,6 @@ class OptionsTestSuite(unittest.TestCase):
         expected = False
         self.assertEqual(expected, null.parse_args(
             config_dict, args)['verbose'])
-
-    def test_Option_null_char_too_many_arguments(self):
-        config_dict = {'verbose': False}
-        args = ['-v', '2']
-        with self.assertRaises(SystemExit) as cm:
-            with capture_sys_output() as (stdout, stderr):
-                null.parse_args(config_dict, args)
-
-        self.assertEqual(cm.exception.code, 2)
 
 if __name__ == '__main__':
     unittest.main()
