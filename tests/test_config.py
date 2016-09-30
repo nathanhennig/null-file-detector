@@ -32,6 +32,7 @@ class ConfigTestSuite(unittest.TestCase):
                             'cat2': null.Default.CAT_2,
                             'cat3': null.Default.CAT_3
                             },
+                        'start_directory': null.Default.START_DIRECTORY
                         # 'txt': {'cat1': 5, 'cat2': 20, 'cat3': 85}
                         }
 
