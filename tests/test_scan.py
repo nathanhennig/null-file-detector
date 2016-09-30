@@ -9,7 +9,6 @@ import time
 from multiprocessing import JoinableQueue
 
 
-@unittest.skip("showing class skipping")
 class ScanTestSuite(unittest.TestCase):
     """Scan test cases."""
 
@@ -42,14 +41,6 @@ class ScanTestSuite(unittest.TestCase):
 
         self.assertTrue(target_null_count - 1 <=
                         count <= target_null_count + 1)
-
-    def test_Scan_count_false(self):
-        count = null.scan(self.name, self.work, self.results)
-        size = os.stat(self.name).st_size
-        target_null_count = null.Default.TEST_FILE_NULL_COUNT
-
-        self.assertFalse(target_null_count - 1 <=
-                         count <= target_null_count + 1)
 
 
 def writeNullFile(name, total_bytes, null_bytes, null_char=b'\x00'):
