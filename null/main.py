@@ -24,6 +24,7 @@ def main():
         work, results, config_dict['null_char'])
 
     # begin scanning
+    print("Scanning files...")
     if not os.path.isdir(config_dict['start_directory']):
         print("Error: {} is not a directory".format(
             config_dict['start_directory']))
