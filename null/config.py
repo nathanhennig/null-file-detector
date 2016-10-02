@@ -27,11 +27,25 @@ def create_default_config(config_file):
     config.set('Categories', 'cat2', str(defaults.Default.CAT_2))
     config.set('Categories', 'cat3', str(defaults.Default.CAT_3))
 
-    with open(config_file, 'wb') as configfile:
-        config.write(configfile)
+    if sys.platform.startswith('win'):
+        with open(config_file, 'wb') as configfile:
+            config.write(configfile)
+
+        # convert line endings to DOS style '\r\n'
+        f = open(config_file)
+        txt = f.read()
+        f.close()
+
+        f = open(config_file, 'w')
+        txt = txt.replace('\n', '\r\n')
+        f.write(txt)
+
+    else:
+        with open(config_file, 'wb') as configfile:
+            config.write(configfile)
 
 
-def read_config(config_file='null.cfg'):
+def read_config(config_file=defaults.Default.CONFIG_NAME):
 
     config = ConfigParser.SafeConfigParser()
 
