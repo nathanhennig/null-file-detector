@@ -11,7 +11,6 @@ import sys
 import os
 
 
-
 def main():
 
     config_dict = read_config()
@@ -26,17 +25,16 @@ def main():
 
     # begin scanning
     if not os.path.isdir(config_dict['start_directory']):
-        print("Error: {} is not a directory")
+        print("Error: {} is not a directory".format(
+            config_dict['start_directory']))
         sys.exit()
 
     scanned_files = []
     files = []
     directories = []
 
-    if config_dict.get('target') and len(config_dict['target']) > 0:
-        while config_dict['target']:
-            target = config_dict['target'].pop()
-            files, directories = scan_target(target_dir, files, directories)
+    if config_dict.get('target'):
+        directories.append(config_dict['target'])
     else:
         directories.append(config_dict['start_directory'])
 
@@ -54,6 +52,10 @@ def main():
 
     # output results
     sort_print(scanned_files, config_dict)
+
+    print('')
+    print('Press enter to close.')
+    raw_input()
 
 if __name__ == '__main__':
     freeze_support()
