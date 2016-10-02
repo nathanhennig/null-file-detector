@@ -11,6 +11,7 @@ class Default():
 
 
     # Config defaults
+    CONFIG_NAME = 'nfd.cfg'
     NULL_CHAR = '\x00'
     RECURSIVE = False
     VERBOSE = False
