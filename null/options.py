@@ -42,10 +42,10 @@ def parse_args(options_dict, args):
                         type=binascii.unhexlify,
                         help="null character to scan for, must be two hex "
                         "digits (eg. 00, a1, ff)")
-    parser.add_argument("-r", "--recursive", help="increase output verbosity",
+    parser.add_argument("-r", "--recursive", help="enables scanning of subdirectories",
                         action="store_true")
 
-    parser.add_argument("-v", "--verbose", help="increase output verbosity",
+    parser.add_argument("-v", "--verbose", help="prepends results with percent null",
                         action="store_true")
 
     stored_args = parser.parse_args(args)
@@ -58,8 +58,8 @@ def process_args(options_dict, stored_args):
     for key in stored_args.__dict__:
         if stored_args.__dict__[key] == None:
             continue
-        elif key == 'targets':
-            options_dict['targets'] = stored_args.__dict__[key]
+        elif key == 'target':
+            options_dict['target'] = stored_args.__dict__[key]
         elif key == 'null_character':
             options_dict['null_char'] = stored_args.__dict__[key][0]
         elif key in ['verbose', 'recursive']:
