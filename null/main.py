@@ -9,6 +9,7 @@ from file import File
 from sortprint import sort_print
 import sys
 import os
+import time
 
 
 def main():
@@ -16,6 +17,8 @@ def main():
     config_dict = read_config()
 
     config_dict = parse_args(config_dict, sys.argv[1:])
+
+    config_dict['timestamp'] = time.strftime('%Y%m%d%H%M')
 
     # initialize worker threads
     work = JoinableQueue()

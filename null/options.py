@@ -48,6 +48,12 @@ def parse_args(options_dict, args):
     parser.add_argument("-v", "--verbose", help="prepends results with percent null",
                         action="store_true")
 
+    log = parser.add_mutually_exclusive_group()
+    log.add_argument("-f", "--files", help="logs results to individual txt files",
+                     action="store_true")
+    log.add_argument("-x", "--xml_log", help="logs results to xml file",
+                     action="store_true")
+
     stored_args = parser.parse_args(args)
 
     return process_args(options_dict, stored_args)
@@ -62,7 +68,7 @@ def process_args(options_dict, stored_args):
             options_dict['target'] = stored_args.__dict__[key]
         elif key == 'null_character':
             options_dict['null_char'] = stored_args.__dict__[key][0]
-        elif key in ['verbose', 'recursive']:
+        elif key in ['verbose', 'recursive', 'files', 'xml_log']:
             options_dict[key] = stored_args.__dict__[key]
         elif key == 'start_directory':
             if os.path.isdir(stored_args.__dict__[key]):
