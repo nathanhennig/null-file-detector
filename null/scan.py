@@ -43,8 +43,11 @@ if sys.platform.startswith('win'):
     forking.Popen = _Popen
 
 def read_in_chunks(file_object, chunk_size=4 * 1024 * 1024):
-    """Lazy function (generator) to read a file piece by piece.
-    Default chunk size: 1k."""
+    """
+    Lazy function (generator) to read a file piece by piece.
+    
+    Default chunk size: 1k.
+    """
     while True:
         data = file_object.read(chunk_size)
         if not data:
@@ -53,6 +56,7 @@ def read_in_chunks(file_object, chunk_size=4 * 1024 * 1024):
 
 
 def do_work(in_queue, out_queue, null_char):
+    """Worker thread code. Counts null chars."""
 
     while True:
         null = 0
@@ -66,6 +70,7 @@ def do_work(in_queue, out_queue, null_char):
 
 
 def scan(name, work_queue, result_queue):
+    """Feeds files into work queue and returns result."""
 
     # produce data
     try:
@@ -85,6 +90,7 @@ def scan(name, work_queue, result_queue):
 
 
 def create_workers(work_queue, result_queue, null_char=b'\x00'):
+    """Generates daemonized worker processes."""
 
     num_workers = mp.cpu_count() - 1
     if num_workers < 1:
@@ -101,6 +107,13 @@ def create_workers(work_queue, result_queue, null_char=b'\x00'):
     return worker_list
 
 def scan_target(path, files, directories):
+    """
+    Processes given path.
+    
+    Adds files to files list.
+    If path is a directory, all subfiles and directories are added to
+    the files and directories lists as appropriate.
+    """
 
     path = os.path.abspath(path)
 

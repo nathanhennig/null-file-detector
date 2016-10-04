@@ -2,6 +2,7 @@ import os
 
 
 class File:
+    """Stores key file information in one place for later use."""
 
     def __init__(self, name):
         self.name = name

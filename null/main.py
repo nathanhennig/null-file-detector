@@ -18,6 +18,8 @@ def main():
 
     config_dict = parse_args(config_dict, sys.argv[1:])
 
+    # create timestamp string for logging to file(s)
+    # yyyymmddhhmm (eg. 201610041359)
     config_dict['timestamp'] = time.strftime('%Y%m%d%H%M')
 
     # initialize worker threads
@@ -37,11 +39,15 @@ def main():
     files = []
     directories = []
 
+    # use target if available or the start_directory value,
+    # which is guarenteed to have a value
     if config_dict.get('target'):
         directories.append(config_dict['target'])
     else:
         directories.append(config_dict['start_directory'])
 
+    # process each directory and file
+    # if recursive is not true, only the first directory will be processed
     while directories:
         target_dir = directories.pop()
         files, directories = scan_target(target_dir, files, directories)
@@ -57,6 +63,8 @@ def main():
     # output results
     sort_print(scanned_files, config_dict)
 
+    # wait for input before closing
+    # (prevents console window from auto closing when opened from a gui)
     print('')
     print('Press enter to close.')
     raw_input()

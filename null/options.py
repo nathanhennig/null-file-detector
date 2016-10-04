@@ -6,6 +6,10 @@ import os
 
 
 def parse_args(options_dict, args):
+    """
+    Set up argument parser, read args, process args into dictionary,
+    return processed args as dictionary.
+    """
 
     parser = argparse.ArgumentParser()
 
@@ -34,6 +38,7 @@ def parse_args(options_dict, args):
     group = parser.add_mutually_exclusive_group()
     group.add_argument('target', nargs='?',
                        type=str, help=('Target file or directory (overrides --start-directory'))
+    # default start_directory set here
     group.add_argument("-s", "--start-directory", default='.',
                        help="starting directory, defaults to current working "
                        "directory")
@@ -60,6 +65,7 @@ def parse_args(options_dict, args):
 
 
 def process_args(options_dict, stored_args):
+    """Process parser args into standard dictionary."""
 
     for key in stored_args.__dict__:
         if stored_args.__dict__[key] == None:

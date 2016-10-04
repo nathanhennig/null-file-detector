@@ -4,6 +4,7 @@ import sys
 
 
 def sort(scanned_files, config_dict):
+    """Sort scanned files into categories."""
 
     cat1 = []
     cat2 = []
@@ -39,6 +40,7 @@ def sort(scanned_files, config_dict):
 
 
 def threshold(suffix, config_dict):
+    """Determines null percent thresholds for categories based on suffix."""
 
     if suffix in config_dict:
         t1 = config_dict[suffix]['cat1']
@@ -53,6 +55,8 @@ def threshold(suffix, config_dict):
 
 
 def sort_print(scanned_files, config_dict):
+    """
+    Sorts scanned files, then outputs to stdout or file(s) as selected."""
 
     c_d = config_dict
     cat1, cat2, cat3, cat4, cat5 = sort(scanned_files, c_d)
@@ -70,6 +74,7 @@ def sort_print(scanned_files, config_dict):
 
 
 def null_print(category, name, config_dict):
+    """Prints sorted results to std or files."""
 
     files = config_dict.get('files')
     verbose = config_dict.get('verbose')
@@ -113,8 +118,10 @@ def null_print(category, name, config_dict):
             else:
                 print('{}'.format(target_file.name))
 
-
+# Separated from null_print() because XML tree for all
+# categories must be built in one pass.
 def xml_print(category_list, config_dict):
+    """Saves results to XML file."""
 
     c_d = config_dict
     verbose = config_dict.get('verbose')
@@ -133,9 +140,10 @@ def xml_print(category_list, config_dict):
         if category:
 
             cat = ET.SubElement(root, cat_names[index])
-            file_entry = ET.SubElement(cat, "file")
+            
 
             for target_file in category:
+                file_entry = ET.SubElement(cat, "file")
                 if verbose and cat_names[index] != 'ERROR':
                     try:
                         null_percent = (target_file.null_count
@@ -156,7 +164,7 @@ def xml_print(category_list, config_dict):
 
 
 def convert_line_end_dos(file):
-    # convert line endings to DOS style '\r\n'
+    """Convert line endings to DOS style '\r\n'."""
     f = open(file)
     txt = f.read()
     f.close()

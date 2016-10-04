@@ -5,6 +5,8 @@ import defaults
 
 
 def create_default_config(config_file):
+    """Sets up a default configuration file."""
+
     config = ConfigParser.SafeConfigParser(allow_no_value=True)
 
     config.add_section('General')
@@ -46,6 +48,7 @@ def create_default_config(config_file):
 
 
 def read_config(config_file=defaults.Default.CONFIG_NAME):
+    """Reads config file and processes into dictionary."""
 
     config = ConfigParser.SafeConfigParser()
 

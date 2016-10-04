@@ -1,4 +1,5 @@
 class Default():
+    """Single repository for default values."""
 
     # Unit Test defaults
     GOOD_CONFIG = 'null.cfg'
