@@ -18,9 +18,7 @@ try:
 except ImportError:
     import multiprocessing.forking as forking
 
-bit64 = platform.architecture()[0].startswith('64')
-
-if sys.platform.startswith('win') and bit64:
+if sys.platform.startswith('win'):
     # First define a modified version of Popen.
     class _Popen(forking.Popen):
         def __init__(self, *args, **kw):
