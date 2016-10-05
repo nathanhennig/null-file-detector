@@ -21,6 +21,7 @@ except ImportError:
 if sys.platform.startswith('win'):
     # First define a modified version of Popen.
     class _Popen(forking.Popen):
+
         def __init__(self, *args, **kw):
             if hasattr(sys, 'frozen'):
                 # We have to set original _MEIPASS2 value from sys._MEIPASS
@@ -42,10 +43,11 @@ if sys.platform.startswith('win'):
     # Second override 'Popen' class with our modified version.
     forking.Popen = _Popen
 
+
 def read_in_chunks(file_object, chunk_size=4 * 1024 * 1024):
     """
     Lazy function (generator) to read a file piece by piece.
-    
+
     Default chunk size: 1k.
     """
     while True:
@@ -106,10 +108,11 @@ def create_workers(work_queue, result_queue, null_char=b'\x00'):
 
     return worker_list
 
+
 def scan_target(path, files, directories):
     """
     Processes given path.
-    
+
     Adds files to files list.
     If path is a directory, all subfiles and directories are added to
     the files and directories lists as appropriate.

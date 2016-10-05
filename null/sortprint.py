@@ -80,7 +80,7 @@ def null_print(category, name, config_dict):
     verbose = config_dict.get('verbose')
 
     if category and files:
-        file_name = config_dict['timestamp'] + name + '.txt'
+        file_name = 'nfd-results-' + name + '.txt'
 
         with open(file_name, 'w') as logfile:
             for target_file in category:
@@ -120,14 +120,17 @@ def null_print(category, name, config_dict):
 
 # Separated from null_print() because XML tree for all
 # categories must be built in one pass.
+
+
 def xml_print(category_list, config_dict):
     """Saves results to XML file."""
 
     c_d = config_dict
     verbose = config_dict.get('verbose')
-    file_name = config_dict['timestamp'] + 'log.xml'
+    file_name = 'nfd-results.xml'
 
     root = ET.Element('log')
+    ET.SubElement(root, 'timestamp').text = config_dict['timestamp']
 
     cat_names = [c_d['category_1_name'],
                  c_d['category_2_name'],
@@ -140,7 +143,6 @@ def xml_print(category_list, config_dict):
         if category:
 
             cat = ET.SubElement(root, cat_names[index])
-            
 
             for target_file in category:
                 file_entry = ET.SubElement(cat, "file")

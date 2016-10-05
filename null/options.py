@@ -13,16 +13,19 @@ def parse_args(options_dict, args):
 
     parser = argparse.ArgumentParser()
 
-    category = parser.add_argument_group('Categories')
+    parser.add_argument('-?', action='help', default=argparse.SUPPRESS,
+                        help=argparse.SUPPRESS)
+
+    category = parser.add_argument_group('categories')
     category.add_argument('-c', '--categories', nargs=3,
                           metavar=('XX', 'YY', 'ZZ'), type=int,
                           help=('null character percentages that control '
-                                "default categorization of files."))
+                                'default categorization of files.'))
     category.add_argument('-ce', '--category-extension', nargs=4,
                           metavar=('EXT', 'XX', 'YY', 'ZZ'), action='append',
                           help=('null character percentages that control '
-                                "categorization of files for specified "
-                                "EXTension (eg. txt, mp4, zip)"))
+                                'categorization of files for specified '
+                                'EXTension (eg. txt, mp4, zip)'))
     category.add_argument('-c1', nargs=1, type=int, metavar='XX',
                           help=('files with null character percentage less '
                                 'than this are GOOD'))
@@ -37,27 +40,30 @@ def parse_args(options_dict, args):
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('target', nargs='?',
-                       type=str, help=('Target file or directory (overrides --start-directory'))
+                       type=str, help=('target file or directory (overrides --start-directory'))
     # default start_directory set here
-    group.add_argument("-s", "--start-directory", default='.',
-                       help="starting directory, defaults to current working "
-                       "directory")
+    group.add_argument('-s', '--start-directory', default='.',
+                       help='starting directory, defaults to current working '
+                       'directory')
 
     parser.add_argument('-n', '--null-character', nargs=1, metavar='XX',
                         type=binascii.unhexlify,
-                        help="null character to scan for, must be two hex "
-                        "digits (eg. 00, a1, ff)")
-    parser.add_argument("-r", "--recursive", help="enables scanning of subdirectories",
-                        action="store_true")
+                        help='null character to scan for, must be two hex '
+                        'digits (eg. 00, a1, ff)')
+    parser.add_argument('-r', '--recursive', help='enables scanning of subdirectories',
+                        action='store_true')
 
-    parser.add_argument("-v", "--verbose", help="prepends results with percent null",
-                        action="store_true")
+    parser.add_argument('-v', '--verbose', help='prepends results with percent null',
+                        action='store_true')
+
+    parser.add_argument('-b', '--batch', action='store_true',
+                        help='take out begin and end messages and ending pause')
 
     log = parser.add_mutually_exclusive_group()
-    log.add_argument("-f", "--files", help="logs results to individual txt files",
-                     action="store_true")
-    log.add_argument("-x", "--xml_log", help="logs results to xml file",
-                     action="store_true")
+    log.add_argument('-f', '--files', help='logs results to individual txt files',
+                     action='store_true')
+    log.add_argument('-x', '--xml_log', help='logs results to xml file',
+                     action='store_true')
 
     stored_args = parser.parse_args(args)
 
@@ -74,7 +80,7 @@ def process_args(options_dict, stored_args):
             options_dict['target'] = stored_args.__dict__[key]
         elif key == 'null_character':
             options_dict['null_char'] = stored_args.__dict__[key][0]
-        elif key in ['verbose', 'recursive', 'files', 'xml_log']:
+        elif key in ['verbose', 'recursive', 'files', 'xml_log', 'batch']:
             options_dict[key] = stored_args.__dict__[key]
         elif key == 'start_directory':
             if os.path.isdir(stored_args.__dict__[key]):

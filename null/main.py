@@ -29,7 +29,8 @@ def main():
         work, results, config_dict['null_char'])
 
     # begin scanning
-    print("Scanning files...")
+    if not config_dict['batch']:
+        print("Scanning files...")
     if not os.path.isdir(config_dict['start_directory']):
         print("Error: {} is not a directory".format(
             config_dict['start_directory']))
@@ -65,9 +66,10 @@ def main():
 
     # wait for input before closing
     # (prevents console window from auto closing when opened from a gui)
-    print('')
-    print('Press enter to close.')
-    raw_input()
+    if not config_dict['batch']:
+        print('')
+        print('Press enter to close.')
+        raw_input()
 
 if __name__ == '__main__':
     freeze_support()
