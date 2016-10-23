@@ -1,6 +1,7 @@
 import ConfigParser
 import binascii
 import sys
+import os
 import defaults
 
 
@@ -50,15 +51,18 @@ def create_default_config(config_file):
 def read_config(config_file=defaults.Default.CONFIG_NAME):
     """Reads config file and processes into dictionary."""
 
+    config_file_path = os.path.normpath(os.path.join(
+        defaults.Default.EXEC_DIRECTORY, config_file))
+
     config = ConfigParser.SafeConfigParser()
 
-    options = config.read(config_file)
+    options = config.read(config_file_path)
 
     # check that config file exists
     if len(options) <= 0:
         print('Config file not found, generating default config file.')
-        create_default_config(config_file)
-        config.read(config_file)
+        create_default_config(config_file_path)
+        config.read(config_file_path)
 
     config_dict = {}
 

@@ -10,6 +10,7 @@ from sortprint import sort_print
 import sys
 import os
 import time
+import defaults
 
 
 def main():
@@ -72,5 +73,10 @@ def main():
         raw_input()
 
 if __name__ == '__main__':
+    # record directory script is located in so that config and log files
+    # are generated and read from that directory
+    defaults.Default.EXEC_DIRECTORY = os.path.dirname(
+        os.path.realpath(__file__))
+
     freeze_support()
     main()
