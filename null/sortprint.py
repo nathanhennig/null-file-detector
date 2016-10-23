@@ -94,12 +94,9 @@ def null_print(category, name, config_dict):
                         null_percent = 0
 
                     logfile.write('{0:.2f} {1}\n'.format(
-                        round(null_percent, 2), target_file.name))
+                        round(null_percent, 2), target_file.name.encode('utf-8')))
                 else:
-                    logfile.write('{}\n'.format(target_file.name))
-
-        if sys.platform.startswith('win'):
-            convert_line_end_dos(file_name)
+                    logfile.write('{}\n'.format(target_file.name.encode('utf-8')))
 
     elif category:
         print(name)
@@ -113,10 +110,15 @@ def null_print(category, name, config_dict):
                 except ZeroDivisionError:
                     null_percent = 0
 
-                print('{0:.2f} {1}'.format(
+                print(u'{0:.2f} {1}'.format(
                     round(null_percent, 2), target_file.name))
             else:
-                print('{}'.format(target_file.name))
+                try:
+                    print(u'{}'.format(target_file.name))
+                except UnicodeEncodeError:
+                    print('Warning: Unicode not supported.'
+                          'Printing ASCII approximation.')
+                    print(target_file.name.encode('utf-8'))
 
 # Separated from null_print() because XML tree for all
 # categories must be built in one pass.
@@ -157,20 +159,10 @@ def xml_print(category_list, config_dict):
 
                     ET.SubElement(file_entry, "path").text = target_file.name
                     ET.SubElement(file_entry, "null_percent").text = str(
-                        round(null_percent, 2))
+                        round(null_percent, 2)).decode('unicode-escape')
                 else:
                     ET.SubElement(file_entry, "path").text = target_file.name
 
             tree = ET.ElementTree(root)
             tree.write(file_name)
 
-
-def convert_line_end_dos(file):
-    """Convert line endings to DOS style '\r\n'."""
-    f = open(file)
-    txt = f.read()
-    f.close()
-
-    f = open(file, 'w')
-    txt = txt.replace('\n', '\r\n')
-    f.write(txt)

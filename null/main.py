@@ -48,6 +48,11 @@ def main():
     else:
         directories.append(config_dict['start_directory'])
 
+    try:
+        directories[0] = directories[0].decode('unicode-escape')
+    except UnicodeEncodeError:
+        pass
+
     # process each directory and file
     # if recursive is not true, only the first directory will be processed
     while directories:

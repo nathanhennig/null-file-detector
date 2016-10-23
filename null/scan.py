@@ -6,6 +6,7 @@ import multiprocessing as mp
 import sys
 import os
 import platform
+import unicodedata
 
 # https://github.com/pyinstaller/pyinstaller/wiki/Recipe-Multiprocessing
 # Module multiprocessing is organized differently in Python 3.4+
@@ -124,7 +125,10 @@ def scan_target(path, files, directories):
         files.append(path)
         return files, directories
 
-    for entry in os.listdir(path):
+    directory_list = [
+        unicodedata.normalize('NFC', f) for f in os.listdir(path)]
+
+    for entry in directory_list:
         entry_path = os.path.join(path, entry)
         if os.path.isdir(entry_path):
             directories.append(entry_path)
