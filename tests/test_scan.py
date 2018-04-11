@@ -44,6 +44,7 @@ class ScanTestSuite(unittest.TestCase):
 
 
 def writeNullFile(name, total_bytes, null_bytes, null_char=b'\x00'):
+    """Creates file with null bytes for tests."""
 
     if null_bytes > total_bytes:
         raise ValueError(

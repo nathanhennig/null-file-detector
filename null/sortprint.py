@@ -55,8 +55,7 @@ def threshold(suffix, config_dict):
 
 
 def sort_print(scanned_files, config_dict):
-    """
-    Sorts scanned files, then outputs to stdout or file(s) as selected."""
+    """Sorts scanned files, then outputs to stdout or file(s) as selected."""
 
     c_d = config_dict
     cat1, cat2, cat3, cat4, cat5 = sort(scanned_files, c_d)
@@ -74,7 +73,7 @@ def sort_print(scanned_files, config_dict):
 
 
 def null_print(category, name, config_dict):
-    """Prints sorted results to std or files."""
+    """Prints sorted results to stdout or files."""
 
     files = config_dict.get('files')
     verbose = config_dict.get('verbose')
@@ -96,7 +95,8 @@ def null_print(category, name, config_dict):
                     logfile.write('{0:.2f} {1}\n'.format(
                         round(null_percent, 2), target_file.name.encode('utf-8')))
                 else:
-                    logfile.write('{}\n'.format(target_file.name.encode('utf-8')))
+                    logfile.write('{}\n'.format(
+                        target_file.name.encode('utf-8')))
 
     elif category:
         print(name)
@@ -120,12 +120,15 @@ def null_print(category, name, config_dict):
                           'Printing ASCII approximation.')
                     print(target_file.name.encode('utf-8'))
 
-# Separated from null_print() because XML tree for all
-# categories must be built in one pass.
+#
 
 
 def xml_print(category_list, config_dict):
-    """Saves results to XML file."""
+    """Saves results to XML file.
+
+    Separated from null_print because the XML tree must be built
+    in one pass for all categories due to the nature of XML syntax.
+    """
 
     c_d = config_dict
     verbose = config_dict.get('verbose')
@@ -165,4 +168,3 @@ def xml_print(category_list, config_dict):
 
             tree = ET.ElementTree(root)
             tree.write(file_name)
-

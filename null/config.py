@@ -58,7 +58,7 @@ def read_config(config_file=defaults.Default.CONFIG_NAME):
 
     options = config.read(config_file_path)
 
-    # check that config file exists
+    # Check that config file exists
     if len(options) <= 0:
         print('Config file not found, generating default config file.')
         create_default_config(config_file_path)

@@ -19,17 +19,17 @@ def main():
 
     config_dict = parse_args(config_dict, sys.argv[1:])
 
-    # create timestamp string for logging to file(s)
+    # Create timestamp string for logging to file(s)
     # yyyymmddhhmm (eg. 201610041359)
     config_dict['timestamp'] = time.strftime('%Y%m%d%H%M')
 
-    # initialize worker threads
+    # Initialize worker threads
     work = JoinableQueue()
     results = JoinableQueue()
     worker_list = create_workers(
         work, results, config_dict['null_char'])
 
-    # begin scanning
+    # Begin scanning
     if not config_dict['batch']:
         print("Scanning files...")
     if not os.path.isdir(config_dict['start_directory']):
@@ -41,7 +41,7 @@ def main():
     files = []
     directories = []
 
-    # use target if available or the start_directory value,
+    # Use target if available or the start_directory value,
     # which is guarenteed to have a value
     if config_dict.get('target'):
         directories.append(config_dict['target'])
@@ -53,8 +53,8 @@ def main():
     except UnicodeEncodeError:
         pass
 
-    # process each directory and file
-    # if recursive is not true, only the first directory will be processed
+    # Process each directory and file
+    # If recursive is not true, only the first directory will be processed
     while directories:
         target_dir = directories.pop()
         files, directories = scan_target(target_dir, files, directories)
@@ -67,10 +67,10 @@ def main():
         if config_dict['recursive'] is False:
             break
 
-    # output results
+    # Output results
     sort_print(scanned_files, config_dict)
 
-    # wait for input before closing
+    # Wait for input before closing
     # (prevents console window from auto closing when opened from a gui)
     if not config_dict['batch']:
         print('')
@@ -78,7 +78,8 @@ def main():
         raw_input()
 
 if __name__ == '__main__':
-    # record directory script is located in so that config and log files
+
+    # Record directory that script is located in so that config and log files
     # are generated and read from that directory
     defaults.Default.EXEC_DIRECTORY = os.path.dirname(
         os.path.realpath(__file__))

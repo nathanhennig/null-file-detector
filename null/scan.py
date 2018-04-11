@@ -46,9 +46,7 @@ if sys.platform.startswith('win'):
 
 
 def read_in_chunks(file_object, chunk_size=4 * 1024 * 1024):
-    """
-    Lazy function (generator) to read a file piece by piece.
-
+    """Lazy function (generator) to read a file piece by piece.
     Default chunk size: 1k.
     """
     while True:
@@ -59,23 +57,25 @@ def read_in_chunks(file_object, chunk_size=4 * 1024 * 1024):
 
 
 def do_work(in_queue, out_queue, null_char):
-    """Worker thread code. Counts null chars."""
+    """Pulls data from in_queue, counts number of null characters,
+    and sends result to out_queue.
+    """
 
     while True:
         null = 0
         item = in_queue.get()
-        # process
+
         for byte in item:
             if byte == null_char:
                 null = null + 1
+
         out_queue.put(null)
         in_queue.task_done()
 
 
 def scan(name, work_queue, result_queue):
-    """Feeds files into work queue and returns result."""
+    """Loads data into work_queue, then gets results from result_queue."""
 
-    # produce data
     try:
         with open(name, 'rb') as f:
             for i in read_in_chunks(f):
@@ -85,7 +85,6 @@ def scan(name, work_queue, result_queue):
     else:
         work_queue.join()
 
-        # get the results
         null_count = sum([result_queue.get()
                           for i in range(result_queue.qsize())])
 
@@ -99,7 +98,7 @@ def create_workers(work_queue, result_queue, null_char=b'\x00'):
     if num_workers < 1:
         num_workers = 1
 
-    # start workers
+    # Start workers
     worker_list = []
     for i in range(num_workers):
         t = Process(target=do_work, args=(work_queue, result_queue, null_char))
@@ -117,6 +116,8 @@ def scan_target(path, files, directories):
     Adds files to files list.
     If path is a directory, all subfiles and directories are added to
     the files and directories lists as appropriate.
+
+    Returns list of files and list of directories.
     """
 
     path = os.path.abspath(path)
